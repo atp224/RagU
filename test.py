@@ -1,6 +1,13 @@
 import openai
 from openai import OpenAI
-client = openai.OpenAI(api_key="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")
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv('secrets.env')
+keys = os.getenv("API_KEY")
+
+client = openai.OpenAI(api_key=keys)
 
 completion = client.chat.completions.create(
   model="gpt-3.5-turbo",
