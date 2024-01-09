@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MenuAI</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+
+</head>
+<body>
+    <form id="promptForm">
+        <input type="text" id="userPrompt" placeholder="Enter your prompt">
+        <button type="submit">Submit Prompt</button>
+    </form>
+    <div id="loading" style="display: none;">Loading...</div>
+    <div id="apiResponse"></div>
+    <div id="menu-grid"></div>
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+</body>
+</html>
