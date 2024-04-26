@@ -80,7 +80,7 @@ def interact_with_openai(user_prompt, restaurant_id):
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-3.5-turbo",
             messages=st.session_state.messages + [
                 {"role": "system", "content": f"Roleplay as a helpful server at a restaurant and answer any questions about the menu provided: {menu_str}. Be knowledgeable about the previous conversation history."},
                 {"role": "user", "content": f"I have food allergies listed here: {selected_allergies} and dietary restrictions listed here: {selected_dietary_restrictions} Give recommendations based on these." + user_prompt}
@@ -146,10 +146,12 @@ if st.session_state['selected_restaurant_id']:
     st.sidebar.header("Menu:")
 
     for item in menu_data:
-        parts = item.split(':')
-        name = parts[0]
-        price = parts[1] if len(parts) > 1 and parts[1] else "Price upon request"
-        description = parts[2] if len(parts) > 2 else "No description available."
+        cleaned_item = item.replace(',:', ':')
+        #cleaned_item = item
+        parts = cleaned_item.split(':')
+        name = parts[0].strip()
+        price = parts[1].strip() if len(parts) > 1 and parts[1] else "Price upon request"
+        description = parts[2].strip() if len(parts) > 2 else "No description available."
 
         if price and price != "Price upon request":
             st.sidebar.markdown(f"**{name} : {price}**")
