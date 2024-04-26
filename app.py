@@ -83,7 +83,7 @@ def interact_with_openai(user_prompt, restaurant_id):
             model="gpt-4-turbo",
             messages=st.session_state.messages + [
                 {"role": "system", "content": f"Roleplay as a helpful server at a restaurant and answer any questions about the menu provided: {menu_str}. Be knowledgeable about the previous conversation history."},
-                {"role": "user", "content": user_prompt}
+                {"role": "user", "content": f"I have food allergies listed here: {selected_allergies} and dietary restrictions listed here: {selected_dietary_restrictions} Give recommendations based on these." + user_prompt}
             ]
         )
         return response.choices[0].message.content
@@ -135,6 +135,13 @@ if st.session_state['selected_restaurant_id']:
                 st.session_state['selected_restaurant_id'] = None
                 st.session_state['messages'] = []
                 st.rerun()
+
+        allergies = ['Milk', 'Eggs', 'Fish', 'Shellfish', 'Tree Nuts', 'Peanuts', 'Wheat', 'Soybeans']
+        selected_allergies = st.multiselect('Select your allergies:', allergies)
+
+        dietary_restrictions = ['Vegetarian', 'Vegan', 'Gluten Free', 'Pescatarian', ]
+        selected_dietary_restrictions = st.multiselect('Select your dietary restrictions:', dietary_restrictions)
+
 
     st.sidebar.header("Menu:")
 
