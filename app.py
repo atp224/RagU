@@ -80,7 +80,7 @@ def interact_with_openai(user_prompt, restaurant_id):
     
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
             messages=st.session_state.messages + [
                 {"role": "system", "content": f"Roleplay as a helpful server at a restaurant and answer any questions about the menu provided: {menu_str}. Be knowledgeable about the previous conversation history."},
                 {"role": "user", "content": user_prompt}
