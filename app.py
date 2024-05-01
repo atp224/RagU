@@ -11,6 +11,11 @@ load_dotenv('secrets.env')
 openai_api_key = os.getenv("API_KEY")
 client = openai.OpenAI(api_key=openai_api_key)
 
+# selected_allergies = ""
+# selected_dietary_restrictions = ""
+# user_string = ""
+
+
 
 # Initialize session state for selected restaurant and messages
 if 'selected_restaurant_id' not in st.session_state:
@@ -78,14 +83,26 @@ def interact_with_openai(user_prompt, restaurant_id):
     menu_data = get_menu(restaurant_id)
     menu_str = ', '.join(menu_data) if menu_data else "Menu not found for the specified restaurant."
     
+    user_string = ""
+    print (selected_allergies)
+    print (selected_dietary_restrictions)
+    if selected_allergies:
+        user_string = user_string + f"I have food allergies listed here: {selected_allergies}."
+    if selected_dietary_restrictions:
+        user_string = user_string + f"I have dietary restrictions listed here: {selected_dietary_restrictions}."
+    if selected_allergies or selected_dietary_restrictions:
+        user_string = user_string + "Please keep these in mind when giving recommendations aobout the menu."
+
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=st.session_state.messages + [
                 {"role": "system", "content": f"Roleplay as a helpful server at a restaurant and answer any questions about the menu provided: {menu_str}. Be knowledgeable about the previous conversation history."},
-                {"role": "user", "content": f"I have food allergies listed here: {selected_allergies} and dietary restrictions listed here: {selected_dietary_restrictions} Give recommendations based on these." + user_prompt}
+                #{"role": "user", "content": f"I have food allergies listed here: {selected_allergies} and dietary restrictions listed here: {selected_dietary_restrictions} Give recommendations based on these." + user_prompt}
+                {"role": "user", "content": user_string + user_prompt}
             ]
         )
+        print(user_string + user_prompt)
         return response.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {e}"
@@ -174,6 +191,6 @@ if st.session_state['selected_restaurant_id']:
         msg = interact_with_openai(prompt,st.session_state['selected_restaurant_id'])
         st.session_state.messages.append({"role": "assistant", "content": msg})
         st.chat_message("assistant").write(msg)
-        print(st.session_state.messages)
+        #print(st.session_state.messages)
 
     
