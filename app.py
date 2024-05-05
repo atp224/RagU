@@ -91,7 +91,7 @@ def interact_with_openai(user_prompt, restaurant_id):
     if selected_dietary_restrictions:
         user_string = user_string + f"I have dietary restrictions listed here: {selected_dietary_restrictions}."
     if selected_allergies or selected_dietary_restrictions:
-        user_string = user_string + "Please keep these in mind when giving recommendations aobout the menu."
+        user_string = user_string + "Please keep these in mind when giving recommendations about the menu."
 
     try:
         response = client.chat.completions.create(
@@ -105,10 +105,16 @@ def interact_with_openai(user_prompt, restaurant_id):
         #print(user_string + user_prompt)
         escaped_response = response.choices[0].message.content.replace('$', '&dollar;')
         #escaped_response = (response.choices[0].message.content)
-        #print(escaped_response)
+        print(escaped_response)
         return escaped_response
 
     except Exception as e:
+        if "Error code: 400" in str(e):
+            custom_message = "The provided menu is too large to process at once. Please select a different restaurant. I am sorry for the inconvenience."
+            print(custom_message)  
+            return custom_message
+        else:
+            return f"An error occurred: {e}"
         return f"An error occurred: {e}"
 
 
@@ -197,6 +203,6 @@ if st.session_state['selected_restaurant_id']:
         st.session_state.messages.append({"role": "assistant", "content": msg})
         st.chat_message("assistant").write(msg, unsafe_allow_html=True)
         print("")
-        print(st.session_state.messages)
+        #print(st.session_state.messages)
 
     
