@@ -84,8 +84,8 @@ def interact_with_openai(user_prompt, restaurant_id):
     menu_str = ', '.join(menu_data) if menu_data else "Menu not found for the specified restaurant."
     
     user_string = ""
-    print (selected_allergies)
-    print (selected_dietary_restrictions)
+    #print (selected_allergies)
+    #print (selected_dietary_restrictions)
     if selected_allergies:
         user_string = user_string + f"I have food allergies listed here: {selected_allergies}."
     if selected_dietary_restrictions:
@@ -102,14 +102,19 @@ def interact_with_openai(user_prompt, restaurant_id):
                 {"role": "user", "content": user_string + user_prompt}
             ]
         )
-        print(user_string + user_prompt)
-        return response.choices[0].message.content
+        #print(user_string + user_prompt)
+        escaped_response = response.choices[0].message.content.replace('$', '&dollar;')
+        #escaped_response = (response.choices[0].message.content)
+        #print(escaped_response)
+        return escaped_response
+
     except Exception as e:
         return f"An error occurred: {e}"
 
 
 # UI for restaurant search
 if not st.session_state['selected_restaurant_id']:
+    st.session_state.messages = []
     st.title('RagU Restaurant Search')
     search_term = st.text_input('Search for a restaurant')
     
@@ -190,7 +195,8 @@ if st.session_state['selected_restaurant_id']:
         st.chat_message("user").write(prompt)
         msg = interact_with_openai(prompt,st.session_state['selected_restaurant_id'])
         st.session_state.messages.append({"role": "assistant", "content": msg})
-        st.chat_message("assistant").write(msg)
-        #print(st.session_state.messages)
+        st.chat_message("assistant").write(msg, unsafe_allow_html=True)
+        print("")
+        print(st.session_state.messages)
 
     
