@@ -11,12 +11,6 @@ load_dotenv('secrets.env')
 openai_api_key = os.getenv("API_KEY")
 client = openai.OpenAI(api_key=openai_api_key)
 
-# selected_allergies = ""
-# selected_dietary_restrictions = ""
-# user_string = ""
-
-
-
 # Initialize session state for selected restaurant and messages
 if 'selected_restaurant_id' not in st.session_state:
     st.session_state['selected_restaurant_id'] = None
@@ -95,16 +89,17 @@ def interact_with_openai(user_prompt, restaurant_id):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
             messages=st.session_state.messages + [
                 {"role": "system", "content": f"Roleplay as a helpful server at a restaurant and answer any questions about the menu provided: {menu_str}. Be knowledgeable about the previous conversation history."},
                 #{"role": "user", "content": f"I have food allergies listed here: {selected_allergies} and dietary restrictions listed here: {selected_dietary_restrictions} Give recommendations based on these." + user_prompt}
-                {"role": "user", "content": user_string + user_prompt}
+                {"role": "user", "content": user_string + user_prompt }
             ]
         )
         #print(user_string + user_prompt)
         escaped_response = response.choices[0].message.content.replace('$', '&dollar;')
-        #escaped_response = (response.choices[0].message.content)
+        escaped_response = escaped_response.replace('\text{\&dollar;}', '&dollar;')
+        escaped_response = (response.choices[0].message.content)
         print(escaped_response)
         return escaped_response
 
@@ -115,7 +110,6 @@ def interact_with_openai(user_prompt, restaurant_id):
             return custom_message
         else:
             return f"An error occurred: {e}"
-        return f"An error occurred: {e}"
 
 
 # UI for restaurant search
