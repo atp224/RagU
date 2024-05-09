@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS restaurants (
 conn.execute(create_table_sql)
 
 # Path to your CSV file
-csv_file_path = 'restaurant_menu3.csv'
+csv_file_path = 'restaurant_menu.csv'
 
 # Initialize a dictionary to hold restaurant data
 restaurants = {}
@@ -36,6 +36,7 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         
         # Parse the menu item into the desired format: item name:price:description
                 # Parse the menu item into the desired format: item name:price:description
+        #print(menu_item)
         price, item_description = menu_item.split(': ', 1)
         item_parts = item_description.split(', ', 1)
         if len(item_parts) == 2:
