@@ -99,7 +99,6 @@ def interact_with_openai(user_prompt, restaurant_id):
         #print(user_string + user_prompt)
         escaped_response = response.choices[0].message.content.replace('$', '&dollar;')
         escaped_response = escaped_response.replace('\text{\&dollar;}', '&dollar;')
-        escaped_response = (response.choices[0].message.content)
         print(escaped_response)
         return escaped_response
 
@@ -196,7 +195,8 @@ if st.session_state['selected_restaurant_id']:
         msg = interact_with_openai(prompt,st.session_state['selected_restaurant_id'])
         st.session_state.messages.append({"role": "assistant", "content": msg})
         st.chat_message("assistant").write(msg, unsafe_allow_html=True)
+        print(msg)
         print("")
-        #print(st.session_state.messages)
+        print(st.session_state.messages)
 
     
